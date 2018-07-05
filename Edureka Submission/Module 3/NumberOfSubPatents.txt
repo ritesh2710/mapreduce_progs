@@ -1,0 +1,60 @@
+Mapper code:
+------------------------
+
+#!/usr/bin/env python
+"""patent_mapper.py"""
+
+import sys
+
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+    patent_cnt, patent_no = line.split(" ")
+    print('%s\t%s' % (patent_cnt, patent_no))
+
+Reducer code:
+------------------------
+
+#!/usr/bin/env python
+"""patent_reducer.py"""
+
+count = 0
+current_patent_no = None
+current_count = 0
+
+import sys
+
+# input comes from STDIN
+for line in sys.stdin:
+    # remove leading and trailing whitespace
+    line = line.strip()
+
+    # parse the input we got from mapper.py
+    patent_cnt, patent_no = line.split(" ")
+
+    # convert count (currently a string) to int
+    try:
+        patent_cnt = int(patent_cnt)
+    except ValueError:
+        # count was not a number, so silently
+        # ignore/discard this line
+        continue
+
+    # this IF-switch only works because Hadoop sorts map output
+    # by key (here: word) before it is passed to the reducer
+    if current_patent_no == patent_no:
+        current_count += patent_cnt
+    else:
+        if current_patent_no:
+            # write result to STDOUT
+            print('%s\t%s' % (current_count,current_patent_no))
+        current_patent_no = patent_no
+        current_count = patent_cnt
+
+# do not forget to output the last word if needed!
+if current_patent_no == patent_no:
+    print('%s\t%s' % (current_count,current_patent_no))
+
+Hadoop command:
+------------------------
+/bin/hadoop jar /opt/cloudera/parcels/CDH/jars/hadoop-streaming-2.6.0-cdh5.11.1.jar -files $HOME/ritesh/scripts/patent_mapper.py -mapper patent_mapper.py -reducer patent_reducer.py -input /user/ritesh/data_set/patent.txt -output /user/ritesh/output/no_of_subpatents 

@@ -1,0 +1,21 @@
+Mapper code:
+------------------------
+
+import sys
+
+characters = 0
+
+# input comes from STDIN (standard input)
+for line in sys.stdin:
+    # Excluding space from the count
+    if not line.isspace():
+        characters = characters + len(line)
+print(characters)
+
+Reducer code:
+------------------------
+No reducer code required for alphabets count
+
+Hadoop command:
+------------------------
+/bin/hadoop jar /opt/cloudera/parcels/CDH/jars/hadoop-streaming-2.6.0-cdh5.11.1.jar -files $HOME/ritesh/scripts/alpha_mapper.py -mapper alpha_mapper.py -input /user/ritesh/data_set/alphabets.txt -output /user/ritesh/output/alphabets 

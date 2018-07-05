@@ -1,0 +1,1 @@
+/bin/hadoop jar /opt/cloudera/parcels/CDH/jars/hadoop-streaming-2.6.0-cdh5.11.1.jar -files $HOME/ritesh/scripts/alpha_mapper.py -mapper alpha_mapper.py -input /user/ritesh/data_set/alphabets.txt -output /user/ritesh/output/alphabets 
